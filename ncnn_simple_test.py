@@ -4,8 +4,8 @@ from ultralytics import YOLO
 
 # Configuration
 video_path = "brt_presentation.mp4"
-model_path = "yolo_custom_v2_mapilary_ncnn_model"
-YOLO_CONFIDENCE = 0.4
+model_path = "yolo_nano_v2_1_class_640_no_filter_ncnn_model"
+YOLO_CONFIDENCE = 0.2
 
 def main():
     print("YOLO Inference Benchmark")

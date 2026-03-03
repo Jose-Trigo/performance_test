@@ -10,7 +10,7 @@ import os
 
 # Configuration
 video_path = "brt_presentation.mp4"
-model_path = "yolo_custom_v2_mapilary_ncnn_model"  ## for ncnn its a folder with the .params and .bin files inside
+model_path = "yolo_nano_v2_1_class_640_no_filter_ncnn_model"  ## for ncnn its a folder with the .params and .bin files inside
 YOLO_CONFIDENCE = 0.4
 CROP_PADDING = 5
 TRACKER_MAX_AGE = 50
