@@ -23,7 +23,7 @@ IMG_SIZE = 640
 IOU_THRESH = 0.45
 CLASS_NAMES = ["other-signs-class", "speed-limit-class"]
 DISPLAY_SCALE = 0.5
-SHOW_LIVE = True
+SHOW_LIVE = False
 
 # =========================
 # QUEUES

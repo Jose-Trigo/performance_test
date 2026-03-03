@@ -17,7 +17,7 @@ TRACKER_MAX_AGE = 50
 TRACKER_MIN_HITS = 1
 TRACKER_IOU_THRESHOLD = 0.3
 DISPLAY_SCALE = 0.5
-SHOW_LIVE = True
+SHOW_LIVE = False
 
 # Queues
 frame_queue = Queue(maxsize=2)
