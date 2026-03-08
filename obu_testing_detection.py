@@ -10,14 +10,14 @@ import os
 
 # Configuration
 video_path = "brt_presentation.mp4"
-model_path = "yolo_nano_v3_1_class_640_filter_19.pt"
+model_path = "yolo_nano_v2_1_class_640_no_filter.pt"
 YOLO_CONFIDENCE = 0.4
 CROP_PADDING = 5
 TRACKER_MAX_AGE = 50
 TRACKER_MIN_HITS = 1
 TRACKER_IOU_THRESHOLD = 0.3
 DISPLAY_SCALE = 0.5
-SHOW_LIVE = False
+SHOW_LIVE = True
 
 # Queues
 frame_queue = Queue(maxsize=2)
