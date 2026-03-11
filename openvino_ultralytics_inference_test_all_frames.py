@@ -4,7 +4,7 @@ from ultralytics import YOLO
 
 # Configuration
 video_path = "brt_presentation.mp4"
-model_path = "yolo_nano_v2_1_class_640_no_filter_openvino_model"
+model_path = "yolo_nano_v2_1_class_640_no_filter_int8_openvino_model"
 YOLO_CONFIDENCE = 0.2
 
 def main():
