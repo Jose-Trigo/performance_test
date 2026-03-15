@@ -3,8 +3,9 @@ import time
 import cv2
 import numpy as np
 
-from ai_edge_litert.compiled_model import CompiledModel
-from ai_edge_litert.tensor_buffer import TensorBuffer
+#import tensorflow as tf                             # <-- WINDOWS
+
+from tflite_runtime.interpreter import Interpreter   # <-- PI
 
 # ---------------------------------------------------------
 # Paths and config
@@ -56,28 +57,21 @@ def nms(boxes, scores, iou_threshold):
 # Main
 # ---------------------------------------------------------
 def main():
-    print("LiteRT YOLO Inference Benchmark")
+    print("TFLite Runtime YOLO Inference Benchmark")
     print(f"Model: {MODEL_PATH}")
     print(f"Video: {VIDEO_PATH}")
 
-    model = CompiledModel.from_file(MODEL_PATH)
+    # ---- NEW: TFLite Runtime model loading ----
+    interpreter = Interpreter(model_path=MODEL_PATH, num_threads=4)   # PI
+    #interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)         # WINDOWS
+    interpreter.allocate_tensors()
 
-    signatures = model.get_signature_list()
-    if not signatures:
-        print("ERROR: No signatures found in model.")
-        return
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
 
-    sig_name = list(signatures.keys())[0]
-    sig = signatures[sig_name]
-    input_name = sig["inputs"][0]
-    output_name = sig["outputs"][0]
-
-    print(f"Using signature: {sig_name}")
-    print(f"Input tensor name: {input_name}")
-    print(f"Output tensor name: {output_name}")
-
-    input_buffer = model.create_input_buffer_by_name(sig_name, input_name)
-    output_buffer = model.create_output_buffer_by_name(sig_name, output_name)
+    input_index = input_details[0]['index']
+    output_index = output_details[0]['index']
+    # --------------------------------------------
 
     cap = cv2.VideoCapture(VIDEO_PATH)
     if not cap.isOpened():
@@ -119,26 +113,15 @@ def main():
         img = rgb.astype(np.float32) / 255.0
         img = np.expand_dims(img, axis=0)
 
-        input_buffer.write(img)
-
-        # INFERENCE
-        model.run_by_name(
-            sig_name,
-            {input_name: input_buffer},
-            {output_name: output_buffer},
-        )
-
-        flat = output_buffer.read(OUTPUT_ELEMENTS, np.float32)
-        preds = flat.reshape(5, 8400)
+        # ---- NEW: TFLite inference ----
+        interpreter.set_tensor(input_index, img)
+        interpreter.invoke()
+        preds = interpreter.get_tensor(output_index).reshape(5, 8400)
+        # --------------------------------
 
         if not debug_printed:
             print("\n=== DEBUG: RAW MODEL OUTPUT ===")
             print("preds shape:", preds.shape)
-            print("x[:10] =", preds[0, :10])
-            print("y[:10] =", preds[1, :10])
-            print("w[:10] =", preds[2, :10])
-            print("h[:10] =", preds[3, :10])
-            print("scores[:10] =", preds[4, :10])
             print("scores min/max:", preds[4].min(), preds[4].max())
             print("scores > 0.2:", np.sum(preds[4] > 0.2))
             print("================================\n")
@@ -158,7 +141,6 @@ def main():
         scores = scores[mask]
 
         if len(scores) > 0:
-            # ✅ FIXED SCALING: normalized [0,1] → pixels
             cx = x_vals * img_w
             cy = y_vals * img_h
             bw = w_vals * img_w
@@ -174,9 +156,6 @@ def main():
             keep = nms(boxes, scores, IOU_THRESHOLD)
             boxes = boxes[keep]
             scores = scores[keep]
-        else:
-            boxes = np.empty((0, 4))
-            scores = np.empty((0,))
 
         total_time = time.perf_counter() - start_total
         inference_times.append(total_time)
@@ -204,7 +183,6 @@ def main():
         print(f"Frames processed: {frame_count}")
         print(f"Average total time: {avg*1000:.2f} ms")
         print(f"FPS (end-to-end): {1.0/avg:.2f}")
-        #print(f"Annotated video saved as: {OUTPUT_VIDEO}")
         print("="*50)
 
 if __name__ == "__main__":
