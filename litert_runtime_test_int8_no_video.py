@@ -10,7 +10,7 @@ from tflite_runtime.interpreter import Interpreter   # <-- PI
 # ---------------------------------------------------------
 # Paths and config
 # ---------------------------------------------------------
-BASE_DIR = r"C:\Users\11032\repos\performance_test"
+BASE_DIR = Path(__file__).resolve().parent
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 MODEL_PATH = os.path.join(MODEL_DIR, "yolo_nano_v2_1_class_640_no_filter_int8.tflite")
 
