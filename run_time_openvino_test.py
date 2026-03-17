@@ -7,7 +7,7 @@ from openvino.runtime import Core
 # Configuration
 # ---------------------------------------------------------
 video_path = "brt_presentation.mp4"
-model_dir = "yolo_nano_v2_1_class_640_no_filter_openvino_model"
+model_dir = "models/yolo_nano_v2_1_class_640_no_filter_int8_openvino_model"
 YOLO_CONFIDENCE = 0.2
 IOU_THRESHOLD = 0.45
 
@@ -35,8 +35,8 @@ def nms(boxes, scores, iou_threshold):
 def main():
     print("OpenVINO YOLO Pure Inference Benchmark")
     core = Core()
-    model = core.read_model(f"{model_dir}/yolo_nano_v2_1_class_640_no_filter.xml")
-    compiled_model = core.compile_model(model, "CPU")
+    model = core.read_model(f"{model_dir}/yolo_nano_v2_1_class_640_no_filter_int8.xml")
+    compiled_model = core.compile_model(model, "GPU")
     input_layer = compiled_model.inputs[0]
     output_layer = compiled_model.outputs[0]
     _, _, input_h, input_w = input_layer.shape

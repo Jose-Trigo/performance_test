@@ -39,7 +39,7 @@ def main():
 
         # Time YOLO inference
         start = time.perf_counter()
-        _ = model(frame, verbose=False, conf=YOLO_CONFIDENCE)
+        _ = model(frame, verbose=False, conf=YOLO_CONFIDENCE,device="intel:gpu")
         elapsed = time.perf_counter() - start
         inference_times.append(elapsed)
 
