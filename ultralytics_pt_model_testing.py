@@ -4,9 +4,9 @@ from ultralytics import YOLO
 
 # ---------------- CONFIG ----------------
 video_path = "brt_presentation.mp4"
-model_path = "models/yolo_26_nano_1_class_v1_no_filter.pt"   # <-- .pt model
+model_path = "models/mapillary_yolo_v8_small_1_class_640_no_filter_v1.pt"   # <-- .pt model
 YOLO_CONFIDENCE = 0.2
-OUTPUT_VIDEO = "ultralytics_output_yolo_26_mapillary.mp4"
+OUTPUT_VIDEO = "ultralytics_output_yolo_8_small_640_mapillary_v1.mp4"
 # ----------------------------------------
 
 
